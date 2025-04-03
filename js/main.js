@@ -23,6 +23,7 @@ function Hero(game, x, y) {
 // inherit from Phaser.Sprite
 Hero.prototype = Object.create(Phaser.Sprite.prototype)
 Hero.prototype.constructor = Hero
+Hero.HEALTH = 0
 Hero.prototype.move = function (direction) {
   const SPEED = 200
   this.body.velocity.x = direction * SPEED
@@ -145,6 +146,8 @@ PlayState.preload = function () {
   this.game.load.audio("sfx:door", "audio/door.wav")
 
   this.game.load.spritesheet("icon:key", "images/key_icon.png", 34, 30)
+
+  this.game.load.spritesheet("icon:heart", "images/heart_live.png", 128, 35)
 }
 
 PlayState.init = function (data) {
@@ -168,7 +171,7 @@ PlayState.init = function (data) {
 // create game entities and set up world here
 PlayState.create = function () {
   this.game.add.image(0, 0, "background")
-  this._loadLevel(this.game.cache.getJSON(`level:${this.level}`))
+  this._loadLevel(this.game.cache.getJSON(`level:${this.level + 1}`))
 
   // create sound entities
   this.sfx = {
@@ -231,6 +234,11 @@ PlayState.update = function () {
   this._handleInput()
   this.coinFont.text = `x${this.coinPickupCount}`
   this.keyIcon.frame = this.hasKey ? 1 : 0
+  if (Hero.HEALTH === 6) {
+    this.heartsIcon.frame = 0
+  } else {
+    this.heartsIcon.frame = Hero.HEALTH
+  }
 }
 
 PlayState._handleInput = function () {
@@ -319,11 +327,15 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
     this.sfx.stomp.play()
   } else {
     this.sfx.stomp.play()
+    Hero.HEALTH += 2
     this.game.state.restart(true, false, { level: this.level })
   }
 }
 
 PlayState._createHud = function () {
+  this.heartsIcon = this.game.make.image(820, 0, "icon:heart")
+  this.heartsIcon.anchor.set(0, 0)
+
   this.keyIcon = this.game.make.image(0, 19, "icon:key")
   this.keyIcon.anchor.set(0, 0.5)
   const NUMBERS_STR = "0123456789X "
@@ -347,6 +359,7 @@ PlayState._createHud = function () {
   this.hud.position.set(10, 10)
   this.hud.add(coinScoreImg)
   this.hud.add(this.keyIcon)
+  this.hud.add(this.heartsIcon)
 }
 
 PlayState._spawnDoor = function (x, y) {

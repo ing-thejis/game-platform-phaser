@@ -232,6 +232,7 @@ PlayState._spawnCharacters = function (data) {
 PlayState.update = function () {
   this._handleCollisions()
   this._handleInput()
+  this._controls(this.hero)
   this.coinFont.text = `x${this.coinPickupCount}`
   this.keyIcon.frame = this.hasKey ? 1 : 0
   if (Hero.HEALTH === 6) {
@@ -394,4 +395,25 @@ PlayState._onHeroVsDoor = function (hero, door) {
   this.sfx.door.play()
   this.game.state.restart(true, false, { level: this.level + 1 })
   // TODO: go to the next level instead
+}
+
+PlayState._controls = function (hero) {
+  const leftBtn = document.getElementById("btn-left")
+  const rightBtn = document.getElementById("btn-right")
+  const jumpBtn = document.getElementById("btn-jump")
+
+  leftBtn.addEventListener("click", function () {
+    hero.move(-10)
+  })
+
+  rightBtn.addEventListener("click", function () {
+    hero.move(10)
+  })
+
+  jumpBtn.addEventListener("click", function () {
+    let didJump = hero.jump()
+    if (didJump) {
+      this.sfx.jump.play()
+    }
+  })
 }

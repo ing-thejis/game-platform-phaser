@@ -30,9 +30,37 @@
       align-items: center;
       justify-content: center;
     }
+    .controls {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 80px;
+    }
+    .controls__buttons {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      background-color: #fff;
+      border: 2px solid #000;
+      color: #000;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
   </style>
 </head>
 <body>
   <h1 class="title">Mars Attacks - Platform Game</h1>
   <div id="game"></div>
+  <div class="controls">
+    <div class="controls__buttons">
+      <button id="btn-left"><</button>
+      <button id="btn-right">></button>
+    </div>
+    <button id="btn-jump">o</button>
+  </div>
 </body>
